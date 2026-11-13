@@ -36,6 +36,7 @@ df["dia_semana"] = df["start_time"].dt.day_name()
 df["fecha"] = df["start_time"].dt.normalize()
 
 df.to_csv(
-    "data/processed/movilidad_limpia.csv",
-    index=False
+    "data/processed/movilidad_limpia.csv.gz",
+    index=False,
+    compression="gzip"
 )
