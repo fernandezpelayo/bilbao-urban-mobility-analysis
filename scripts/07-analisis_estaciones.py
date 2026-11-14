@@ -1,5 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from pathlib import Path
+
+
+Path("outputs/analisis_estaciones").mkdir(
+    parents=True,
+    exist_ok=True
+)
 
 df = pd.read_csv(
     "data/processed/df_final_limpio.csv.gz",
@@ -30,6 +37,8 @@ plt.savefig(
 )
 
 plt.show()
+plt.close()
+
 
 top_destino = (
     df["end_street1"]
@@ -54,6 +63,8 @@ plt.savefig(
 )
 
 plt.show()
+plt.close()
+
 
 print("\nTOP ORIGEN")
 print(top_origen)
@@ -119,6 +130,7 @@ plt.savefig(
 )
 
 plt.show()
+plt.close()
 
 
 estaciones = sorted(df["start_street1"].unique())

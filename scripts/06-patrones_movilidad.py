@@ -1,5 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from pathlib import Path
+
+
+Path("outputs/patrones_movilidad").mkdir(
+    parents=True,
+    exist_ok=True
+)
 
 df = pd.read_csv(
     "data/processed/df_final_limpio.csv.gz",
@@ -29,6 +36,7 @@ plt.savefig(
     bbox_inches="tight"
 )
 plt.show()
+plt.close()
 
 
 # -------------------
@@ -63,7 +71,7 @@ plt.savefig(
     bbox_inches="tight"
 )
 plt.show()
-
+plt.close()
 
 # -------------------
 # VIAJES POR MES
@@ -89,7 +97,7 @@ plt.savefig(
     bbox_inches="tight"
 )
 plt.show()
-
+plt.close()
 
 # -------------------
 # VIAJES DIARIOS
@@ -112,3 +120,4 @@ plt.savefig(
     bbox_inches="tight"
 )
 plt.show()
+plt.close()

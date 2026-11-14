@@ -1,6 +1,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from pathlib import Path
 
+Path("outputs/factores_demanda").mkdir(
+    parents=True,
+    exist_ok=True
+)
 
 # =========================
 # CARGA DE DATOS
@@ -96,6 +101,7 @@ plt.savefig(
 )
 
 plt.show()
+plt.close()
 
 
 # =========================
@@ -181,6 +187,7 @@ plt.savefig(
 )
 
 plt.show()
+plt.close()
 
 
 
@@ -231,6 +238,7 @@ plt.savefig(
 )
 
 plt.show()
+plt.close()
 
 
 # =========================
@@ -347,6 +355,7 @@ plt.savefig(
 )
 
 plt.show()
+plt.close()
 
 print("\n" + "="*50)
 print("NÚMERO DE DÍAS POR RANGO DE LLUVIA")
@@ -418,6 +427,7 @@ plt.savefig(
 )
 
 plt.show()
+plt.close()
 
 print("\n" + "="*50)
 print("NÚMERO DE DÍAS POR RANGO DE SOL")
@@ -492,6 +502,7 @@ plt.savefig(
 )
 
 plt.show()
+plt.close()
 
 print("\n" + "="*50)
 print("NÚMERO DE DÍAS POR RANGO DE TEMPERATURA")
@@ -578,6 +589,7 @@ plt.savefig(
 )
 
 plt.show()
+plt.close()
 
 # =========================
 # SOL EN DÍAS LABORABLES
@@ -645,6 +657,7 @@ plt.savefig(
 )
 
 plt.show()
+plt.close()
 
 # ===================================
 # TEMPERATURA MÁXIMA EN DÍAS LABORABLES
@@ -713,3 +726,4 @@ plt.savefig(
 )
 
 plt.show()
+plt.close()
