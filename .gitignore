@@ -5,3 +5,6 @@
 __pycache__/
 *.py[cod]
 .venv/
+
+# Mapas HTML generados con la clave de CARTO
+outputs/estaciones/*.html
