@@ -13,6 +13,20 @@ clima = pd.read_csv(
     low_memory=False
 )
 
+# Comprobar columnas necesarias
+columnas_necesarias = [
+    "fecha",
+    "tmed",
+    "prec",
+    "tmin",
+    "tmax",
+    "sol"
+]
+
+faltantes = set(columnas_necesarias) - set(clima.columns)
+
+if faltantes:
+    raise ValueError(f"Faltan columnas meteorológicas: {faltantes}")
 
 # Convertir fechas
 mov["fecha"] = pd.to_datetime(mov["fecha"])
@@ -57,6 +71,20 @@ df_final = mov.merge(
     how="left",
     validate="many_to_one"
 )
+
+# Comprobar que el merge conserva todos los registros
+if len(df_final) != len(mov):
+    raise ValueError("El merge ha modificado el número de registros.")
+
+# Comprobar variables meteorológicas principales
+columnas_esenciales = ["tmed", "tmin", "tmax", "prec", "sol"]
+
+nulos_clima = df_final[columnas_esenciales].isna().sum()
+
+if nulos_clima.any():
+    raise ValueError(f"Hay valores nulos en variables meteorológicas:\n{nulos_clima}")
+
+print("Comprobación del merge: correcta.")
 
 # Guardar
 df_final.to_csv(
