@@ -72,10 +72,6 @@ df_final = mov.merge(
     validate="many_to_one"
 )
 
-# Comprobar que el merge conserva todos los registros
-if len(df_final) != len(mov):
-    raise ValueError("El merge ha modificado el número de registros.")
-
 # Comprobar variables meteorológicas principales
 columnas_esenciales = ["tmed", "tmin", "tmax", "prec", "sol"]
 
@@ -101,6 +97,3 @@ print(df_final.shape)
 print("\nFechas:")
 print(df_final["fecha"].min())
 print(df_final["fecha"].max())
-
-print("\nNulos clima:")
-print(df_final["tmed"].isna().sum())

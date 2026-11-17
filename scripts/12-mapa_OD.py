@@ -100,10 +100,6 @@ rutas_top = rutas_top.rename(
 # COMPROBACIONES
 # =========================
 
-print("\nPrimeras rutas:")
-print(rutas_top.head())
-
-
 print("\nRutas más frecuentes:")
 print(
     rutas_top[
@@ -115,16 +111,19 @@ print(
     ].head()
 )
 
-print(
-    rutas_top[
-        [
-            "lat_inicio",
-            "lon_inicio",
-            "lat_fin",
-            "lon_fin"
-        ]
-    ].isna().sum()
-)
+columnas_coordenadas = [
+    "lat_inicio",
+    "lon_inicio",
+    "lat_fin",
+    "lon_fin"
+]
+
+if rutas_top[columnas_coordenadas].isna().any().any():
+    raise ValueError(
+        "Hay rutas sin coordenadas de origen o destino."
+    )
+
+print("Comprobación de coordenadas: correcta.")
 
 print(
     f"\nRutas representadas: {len(rutas_top)}"

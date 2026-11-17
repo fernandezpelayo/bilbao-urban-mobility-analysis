@@ -73,7 +73,7 @@ The dataset contains information about journeys made within the system, includin
 - Journey end date and time.
 - Journey duration.
 
-Obtaining this data was one of the initial stages of the project and provided the records needed to carry out the analysis over a full year.
+Obtaining this data was one of the initial stages of the project and provided the records needed to analyse mobility patterns during 2021.
 
 The available mobility records cover the period from January 1 to December 27, 2021. Therefore, mobility data does not cover the final four days of the year, although the weather data does cover the entire year.
 
@@ -85,20 +85,20 @@ An automated download process was developed to retrieve the information for 2021
 
 The process included:
 
-- Automatic retries in case of connection errors.
-- Handling of `429` responses caused by excessive requests.
-- Recovery of periods whose downloads had not been completed successfully.
-- Delays between certain requests to avoid exceeding API limits.
+- Automatic retries in case of connection and download errors;
+- Checks of HTTP responses;
+- Identification of months whose downloads had not been completed successfully;
+- Delays between certain requests to avoid exceeding API limits;
 - Final validation of the data's time coverage.
 
-Once the download was completed, the weather data was validated to ensure coverage of **all 365 days of 2021**, from January 1 to December 31, with no missing dates.
+Once the download was completed, the weather data was validated to ensure coverage of all 365 days of 2021, from January 1 to December 31, with no missing or duplicate dates.
 
 ### Dataset Summary
 
 | Feature | Value |
 |----------------|------:|
 | Analysis period | 2021 |
-| Original journeys | 682,329 |
+| Original journeys | 721,777 |
 | Analysed journeys | 681,489 |
 | Stations | 43 |
 | Weather source | AEMET OpenData API |
@@ -225,7 +225,7 @@ The main transformations included:
 - Validating time coverage.
 - Checking the quality of the data integration process.
 
-After the initial cleaning and data integration, an additional cleaning stage was carried out to exclude records corresponding to internal-service stations, such as workshops and testing stations. During this final stage, 840 records were removed, leaving 681,489 journeys for the final analysis.
+Of the 721,777 records corresponding to 2021, 39,448 journeys were excluded because their duration did not meet the established criteria (between 2 and 180 minutes), leaving 682,329 records. After integrating the datasets, a further cleaning step removed 840 journeys associated with internal-service stations, such as workshops and testing stations. The final dataset used for the analysis contained 681,489 journeys.
 
 ---
 
@@ -235,11 +235,10 @@ Once both datasets had been cleaned, they were integrated using the date as a co
 
 Several checks were then performed on the resulting dataset:
 
-- Complete coverage of the study period.
-- Correspondence between mobility and weather dates.
-- Review of missing values.
-- Absence of duplicate records.
-- Structure and consistency of the resulting dataset.
+- Correspondence between mobility dates and the available weather records.
+- Validation of the relationship between both datasets to prevent row multiplication during the join.
+- Checks for missing values in essential weather variables.
+- Checks on the structure and consistency of the resulting dataset.
 
 The result is a single dataset prepared for the different stages of analysis.
 
@@ -268,6 +267,14 @@ The relationship between demand and different weather variables is studied, as w
 - Sunshine hours.
 - Maximum temperature.
 - Day type.
+
+**Note on Daily Demand Calculations**
+
+The analysis of factors influencing demand uses days with valid journey records, applying the data cleaning criteria established in the project (journey duration between 2 and 180 minutes).
+
+Days without valid journeys are excluded from the calculation of averages, as journey records alone cannot determine whether these days correspond to periods with no service activity or periods with unavailable data.
+
+Therefore, the results represent average demand on days with recorded activity, rather than average demand across all calendar days of the year.
 
 ---
 
@@ -365,11 +372,11 @@ Station activity levels are compared using the number of departures, arrivals an
 
 #### Destination Stations
 
-![Top 10 destination stations](outputs/estaciones/top10_receptoras.png)
+![Top 10 net receivig stations](outputs/estaciones/top10_receptoras.png)
 
 #### Origin Stations
 
-![Top 10 origin stations](outputs/estaciones/top10_emisoras.png)
+![Top 10 net sending stations](outputs/estaciones/top10_emisoras.png)
 
 ### 4. Spatial Analysis
 
@@ -411,7 +418,7 @@ During the development of the project, I had to solve several problems related t
 
 - **Data validation:** checking time coverage, identifying missing data and reviewing potential duplicates and inconsistencies before proceeding with the analysis.
 
-- **Geographical representation:** preparing station information and coordinates to represent activity and journeys through interactive maps using Folium.
+- **Geographical representation:** preparing station information and coordinates to represent activity and journeys through interactive maps using Folium. It was also necessary to match historical station identifiers from 2021 with those in the available coordinate file, checking their correspondence to avoid incorrect geographical assignments.
 
 ---
 

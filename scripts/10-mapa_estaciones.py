@@ -108,43 +108,20 @@ for numero, (lat, lon) in coordenadas_historicas.items():
     mapa_df.loc[mapa_df["numero"] == numero, "lat"] = lat
     mapa_df.loc[mapa_df["numero"] == numero, "lon"] = lon
 
-# Comprobar las coordenadas asignadas
-print("\nESTACIONES SIN COORDENADAS:")
-print(
-    mapa_df.loc[
-        mapa_df["lat"].isna() | mapa_df["lon"].isna(),
-        "estacion"
+coordenadas_faltantes = mapa_df["lat"].isna() | mapa_df["lon"].isna()
+if coordenadas_faltantes.any():
+    estaciones_sin_coordenadas = mapa_df.loc[
+        coordenadas_faltantes, "estacion"
     ].tolist()
-)
+    raise ValueError(
+        f"Faltan coordenadas para estas estaciones: {estaciones_sin_coordenadas}"
+    )
 
-print("\nTOTAL DE ESTACIONES:")
-print(len(mapa_df))
-
-print("\nESTACIONES CON COORDENADAS:")
-print(mapa_df[["estacion", "lat", "lon"]].notna().all(axis=1).sum())
+print(f"Coordenadas asignadas: {len(mapa_df)} estaciones.")
 
 mapa_df.to_csv(
     "data/processed/actividad_estaciones_geo.csv",
     index=False
-)
-
-
-print("\n" + "="*50)
-print("COMPROBACIÓN DE COORDENADAS")
-print("="*50)
-
-print(
-    mapa_df[
-        ["numero", "estacion", "lat", "lon"]
-    ].head()
-)
-
-print(
-    f"\nLatitudes faltantes: {mapa_df['lat'].isna().sum()}"
-)
-
-print(
-    f"Longitudes faltantes: {mapa_df['lon'].isna().sum()}"
 )
 
 

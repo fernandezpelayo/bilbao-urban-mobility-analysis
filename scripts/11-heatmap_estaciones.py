@@ -15,9 +15,6 @@ mapa_df = pd.read_csv(
    "data/processed/actividad_estaciones_geo.csv"
 )
 
-print(mapa_df.shape)
-print(mapa_df[["lat", "lon"]].isna().sum())
-
 # =========================
 # CREAR MAPA
 # =========================
@@ -49,17 +46,14 @@ folium.TileLayer(
 # PREPARAR DATOS HEATMAP
 # =========================
 
-mapa_df["lat"] = (
-    mapa_df["lat"]
-    .str.replace(",", ".")
-    .astype(float)
-)
+for columna in ["lat", "lon"]:
+    mapa_df[columna] = pd.to_numeric(
+        mapa_df[columna].astype(str).str.replace(",", ".", regex=False),
+        errors="coerce"
+    )
 
-mapa_df["lon"] = (
-    mapa_df["lon"]
-    .str.replace(",", ".")
-    .astype(float)
-)
+if mapa_df[["lat", "lon"]].isna().any().any():
+    raise ValueError("Hay coordenadas ausentes o no numéricas en el dataset geográfico.")
 
 
 heat_data = []

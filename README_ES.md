@@ -73,7 +73,7 @@ El conjunto de datos contiene información relativa a los desplazamientos realiz
 - Fecha y hora de finalización.
 - Duración del viaje.
 
-La obtención de estos datos constituyó una de las primeras etapas del proyecto y permitió disponer de los registros necesarios para realizar el análisis sobre un año completo.
+La obtención de estos datos constituyó una de las primeras etapas del proyecto y permitió disponer de los registros necesarios para analizar los patrones de movilidad durante 2021.
 
 Los registros de movilidad disponibles para el análisis abarcan desde el 1 de enero hasta el 27 de diciembre de 2021. Por tanto, la cobertura de los datos de movilidad no comprende los últimos cuatro días del año, aunque los datos meteorológicos sí cubren el año completo.
 
@@ -85,20 +85,20 @@ Para obtener la información correspondiente a 2021 se desarrolló un proceso au
 
 Durante este proceso se implementaron:
 
-- reintentos automáticos ante errores de conexión;
-- gestión de respuestas `429` por exceso de peticiones;
-- recuperación de periodos cuya descarga no se hubiera completado correctamente;
+- reintentos automáticos ante errores de conexión y descarga;
+- comprobación de las respuestas HTTP;
+- Identificación de los meses cuya descarga no se hubiera completado correctamente;
 - pausas entre determinadas peticiones para evitar superar los límites de la API;
 - validación final de la cobertura temporal de los datos.
 
-Una vez finalizada la descarga, se validó que los datos meteorológicos cubrieran los **365 días de 2021**, desde el 1 de enero hasta el 31 de diciembre, sin fechas faltantes.
+Una vez finalizada la descarga, se validó que los datos meteorológicos cubrieran los **365 días de 2021**, desde el 1 de enero hasta el 31 de diciembre, sin fechas faltantes ni duplicadas.
 
 ### Resumen del conjunto de datos
 
 | Característica | Valor |
 |----------------|------:|
 | Periodo analizado | 2021 |
-| Viajes originales | 682.329 |
+| Viajes originales | 721.777 |
 | Viajes analizados | 681.489 |
 | Estaciones | 43 |
 | Fuente meteorológica | API OpenData AEMET |
@@ -227,7 +227,7 @@ Entre las principales transformaciones realizadas destacan:
 - validación de la cobertura temporal;
 - comprobación de la calidad del proceso de integración.
 
-Tras la limpieza inicial y la integración de los datos, se realizó una depuración adicional para excluir registros correspondientes a estaciones de servicio interno, como talleres y estaciones de pruebas. En esta última fase se eliminaron 840 registros, quedando 681.489 viajes para el análisis final.
+De los 721.777 registros correspondientes a 2021, se descartaron 39.448 viajes cuya duración no cumplía los criterios establecidos (entre 2 y 180 minutos), quedando 682.329 registros. Posteriormente, tras la integración de los datos, se realizó una depuración adicional para excluir 840 viajes correspondientes a estaciones de servicio interno, como talleres y estaciones de pruebas. El conjunto final utilizado en el análisis quedó formado por **681.489 viajes**.
 
 ---
 
@@ -237,11 +237,10 @@ Una vez depurados ambos conjuntos de datos, se integraron utilizando la fecha co
 
 Posteriormente se realizaron distintas comprobaciones sobre el dataset resultante:
 
-- cobertura completa del periodo de estudio;
-- correspondencia entre las fechas de movilidad y meteorología;
-- revisión de valores ausentes;
-- ausencia de registros duplicados;
-- estructura y consistencia del dataset resultante.
+- Correspondencia de las fechas de movilidad con los registros meteorológicos disponibles;
+- Validación de la relación entre ambos conjuntos de datos para evitar multiplicaciones de registros durante la integración;
+- Revisión de valores ausentes en las variables meteorológicas esenciales;
+- Comprobación de la estructura y consistencia del dataset resultante.
 
 El resultado es un único dataset preparado para las diferentes fases de análisis.
 
@@ -270,6 +269,14 @@ Se estudia la relación entre la demanda y distintas variables meteorológicas, 
 - Horas de sol;
 - Temperatura máxima;
 - Tipo de día.
+
+**Nota sobre el cálculo de la demanda diaria**
+
+El análisis de los factores que influyen en la demanda utiliza los días con registros de viajes válidos, aplicando previamente los criterios de limpieza establecidos en el proyecto (duración entre 2 y 180 minutos).
+
+Los días sin viajes válidos no se incorporan al cálculo de las medias, ya que no es posible determinar únicamente a partir del registro de viajes si corresponden a días sin actividad del servicio o a periodos sin datos disponibles.
+
+Por este motivo, los resultados representan la demanda media de los días con actividad registrada y no la demanda media de todos los días del año.
 
 ---
 
@@ -416,7 +423,7 @@ Durante el desarrollo del proyecto tuve que resolver varios problemas relacionad
 
 - **Validación de los datos:** comprobar la cobertura temporal, identificar datos ausentes y revisar posibles duplicados e inconsistencias antes de continuar con el análisis.
 
-- **Representación geográfica:** preparar la información de las estaciones y sus coordenadas para representar la actividad y los desplazamientos mediante mapas interactivos con Folium.
+- **Representación geográfica:** preparar la información de las estaciones y sus coordenadas para representar la actividad y los desplazamientos mediante mapas interactivos con Folium. También fue necesario relacionar los identificadores históricos de las estaciones de 2021 con los identificadores del archivo de coordenadas disponible, comprobando su correspondencia para evitar asignaciones geográficas incorrectas.
 
 ---
 

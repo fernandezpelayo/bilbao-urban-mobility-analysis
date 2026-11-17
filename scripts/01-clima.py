@@ -42,6 +42,7 @@ def get_month_data(month):
             )
 
             data = r.json()
+            r.raise_for_status()
 
             if "datos" not in data:
 
@@ -102,6 +103,32 @@ final = pd.concat(
     all_data,
     ignore_index=True
 )
+
+# Comprobar cobertura del año
+final["fecha"] = pd.to_datetime(final["fecha"])
+
+fechas_esperadas = pd.date_range(
+    start="2021-01-01",
+    end="2021-12-31",
+    freq="D"
+)
+
+fechas_obtenidas = final["fecha"].dt.normalize().drop_duplicates()
+
+fechas_faltantes = fechas_esperadas.difference(fechas_obtenidas)
+
+if len(fechas_faltantes) > 0:
+    raise ValueError(
+        f"Faltan {len(fechas_faltantes)} días de datos meteorológicos: "
+        f"{fechas_faltantes.strftime('%Y-%m-%d').tolist()}"
+    )
+
+# Comprobar fechas duplicadas
+if final["fecha"].dt.normalize().duplicated().any():
+    raise ValueError("Hay fechas meteorológicas duplicadas.")
+
+print("Cobertura meteorológica: 365 días.")
+print("Comprobación de fechas duplicadas: correcta.")
 
 final.to_csv(
     "data/raw/clima_2021.csv",
